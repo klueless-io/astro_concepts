@@ -1,0 +1,14 @@
+{
+  "name": "astro_concepts",
+  "version": "0.0.1",
+  "description": "astro_concepts is set of ruby functions testing code concepts that will be converted to TypeScript use in Astro Projects",
+  "scripts": {
+    "release": "semantic-release"
+  },
+  "devDependencies": {
+    "@klueless-js/semantic-release-rubygem": "github:klueless-js/semantic-release-rubygem",
+    "@semantic-release/changelog": "^6.0.1",
+    "@semantic-release/git": "^10.0.1",
+    "semantic-release": "^19.0.5"
+  }
+}
