@@ -1,7 +1,12 @@
 # frozen_string_literal: true
 
 RSpec.describe AstroConcepts::CreateToc do
-  let(:instance) { described_class.new(raw_headings.headings) }
+  let(:instance) { described_class.new(map_astro_to_toc_headings) }
+  let(:map_astro_to_toc_headings) do
+    raw_headings.headings.map.with_index do |heading, index|
+      AstroConcepts::Heading.new(heading.depth, index, heading.text, slug: heading.slug)
+    end
+  end
 
   subject { subject }
 
@@ -35,11 +40,11 @@ RSpec.describe AstroConcepts::CreateToc do
 
           it do
             is_expected.to eq([
-                                { depth: 1, sequence: 0, text: 'Heading 1',
+                                { depth: 1, sequence: 0, text: 'Heading 1', slug: 'heading-1',
                                   headings: [
-                                    { depth: 2, sequence: 1, text: 'Heading 2',
+                                    { depth: 2, sequence: 1, text: 'Heading 2', slug: 'heading-2',
                                       headings: [
-                                        { depth: 3, sequence: 2, text: 'Heading 3' }
+                                        { depth: 3, sequence: 2, text: 'Heading 3', slug: 'heading-3' }
                                       ] }
                                   ] }
                               ])
@@ -65,11 +70,11 @@ RSpec.describe AstroConcepts::CreateToc do
 
           it do
             is_expected.to eq([
-                                { depth: 1, sequence: 0, text: 'Heading 1',
+                                { depth: 1, sequence: 0, text: 'Heading 1', slug: 'heading-1',
                                   headings: [
-                                    { depth: 2, sequence: 1, text: 'Heading 2',
+                                    { depth: 2, sequence: 1, text: 'Heading 2', slug: 'heading-2',
                                       headings: [
-                                        { depth: 6, sequence: 2, text: 'Heading 6' }
+                                        { depth: 6, sequence: 2, text: 'Heading 6', slug: 'heading-6' }
                                       ] }
                                   ] }
                               ])
@@ -100,13 +105,13 @@ RSpec.describe AstroConcepts::CreateToc do
 
           it do
             is_expected.to eq([
-                                { depth: 1, sequence: 0, text: 'Heading 1',
+                                { depth: 1, sequence: 0, text: 'Heading 1', slug: 'heading-1',
                                   headings: [
-                                    { depth: 2, sequence: 1, text: 'Heading 2' },
-                                    { depth: 2, sequence: 2, text: 'Heading 2 - sibling',
+                                    { depth: 2, sequence: 1, text: 'Heading 2', slug: 'heading-2' },
+                                    { depth: 2, sequence: 2, text: 'Heading 2 - sibling', slug: 'heading-2---sibling',
                                       headings: [
-                                        { depth: 4, sequence: 3, text: 'Heading 4' },
-                                        { depth: 4, sequence: 4, text: 'Heading 4 - sibling' }
+                                        { depth: 4, sequence: 3, text: 'Heading 4', slug: 'heading-4' },
+                                        { depth: 4, sequence: 4, text: 'Heading 4 - sibling', slug: 'heading-4---sibling' }
                                       ] }
                                   ] }
                               ])
@@ -139,17 +144,17 @@ RSpec.describe AstroConcepts::CreateToc do
           it do
             is_expected.to eq([
 
-                                { depth: 1, sequence: 0, text: 'Heading 1',
+                                { depth: 1, sequence: 0, text: 'Heading 1', slug: 'heading-1',
                                   headings: [
-                                    { depth: 2, sequence: 1, text: 'Heading 2',
+                                    { depth: 2, sequence: 1, text: 'Heading 2', slug: 'heading-2',
                                       headings: [
-                                        { depth: 3, sequence: 2, text: 'Heading 3' }
+                                        { depth: 3, sequence: 2, text: 'Heading 3', slug: 'heading-3' }
                                       ] },
-                                    { depth: 2, sequence: 3, text: 'Heading 2 - upstream',
+                                    { depth: 2, sequence: 3, text: 'Heading 2 - upstream', slug: 'heading-2---upstream',
                                       headings: [
-                                        { depth: 4, sequence: 4, text: 'Heading 4' }
+                                        { depth: 4, sequence: 4, text: 'Heading 4', slug: 'heading-4' }
                                       ] },
-                                    { depth: 2, sequence: 5, text: 'Heading 2 - different upstream' }
+                                    { depth: 2, sequence: 5, text: 'Heading 2 - different upstream', slug: 'heading-2---different-upstream' }
                                   ] }
 
                               ])
@@ -177,11 +182,11 @@ RSpec.describe AstroConcepts::CreateToc do
 
           it do
             is_expected.to eq([
-                                { depth: 2, sequence: 0, text: 'Heading 2',
+                                { depth: 2, sequence: 0, text: 'Heading 2', slug: 'heading-2',
                                   headings: [
-                                    { depth: 4, sequence: 1, text: 'Heading 4' }
+                                    { depth: 4, sequence: 1, text: 'Heading 4', slug: 'heading-4' }
                                   ] },
-                                { depth: 2, sequence: 2, text: 'Heading 2' }
+                                { depth: 2, sequence: 2, text: 'Heading 2', slug: 'heading-2' }
                               ])
           end
         end
@@ -211,14 +216,14 @@ RSpec.describe AstroConcepts::CreateToc do
 
           it do
             is_expected.to eq([
-                                { depth: 5, sequence: 0, text: 'Heading 5' },
-                                { depth: 4, sequence: 1, text: 'Heading 4',
+                                { depth: 5, sequence: 0, text: 'Heading 5', slug: 'heading-5' },
+                                { depth: 4, sequence: 1, text: 'Heading 4', slug: 'heading-4',
                                   headings: [
-                                    { depth: 5, sequence: 2, text: 'Heading 5 - connected to H4' }
+                                    { depth: 5, sequence: 2, text: 'Heading 5 - connected to H4', slug: 'heading-5---connected-to-h4' }
                                   ] },
-                                { depth: 3, sequence: 3, text: 'Heading 3' },
-                                { depth: 2, sequence: 4, text: 'Heading 2' },
-                                { depth: 1, sequence: 5, text: 'Heading 1' }
+                                { depth: 3, sequence: 3, text: 'Heading 3', slug: 'heading-3' },
+                                { depth: 2, sequence: 4, text: 'Heading 2', slug: 'heading-2' },
+                                { depth: 1, sequence: 5, text: 'Heading 1', slug: 'heading-1' }
                               ])
           end
         end

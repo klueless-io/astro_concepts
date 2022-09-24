@@ -5,14 +5,16 @@ module AstroConcepts
     attr_reader :depth
     attr_reader :sequence
     attr_reader :text
+    attr_reader :opts
 
     attr_accessor :parent
     attr_accessor :headings
 
-    def initialize(depth, sequence, text)
+    def initialize(depth, sequence, text, opts = {})
       @depth = depth
       @sequence = sequence
       @text = text
+      @opts = opts
       @parent = nil
       @headings = nil
     end
@@ -28,7 +30,7 @@ module AstroConcepts
         depth: depth,
         sequence: sequence,
         text: text
-      }
+      }.merge(opts)
 
       result[:headings] = headings.map(&:to_h) if headings
 
@@ -40,6 +42,7 @@ module AstroConcepts
       puts "depth       : #{depth}"
       puts "sequence    : #{sequence}"
       puts "text        : #{text}"
+      puts "opts        : #{opts}"
       puts "headings    : #{headings.map(&:text).join(', ')}" if headings
     end
   end

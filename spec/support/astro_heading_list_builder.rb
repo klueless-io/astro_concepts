@@ -8,7 +8,7 @@ class AstroHeadingListBuilder
   end
 
   def add(depth, text)
-    @headings << AstroHeading.new(depth, text.to_underscore.gsub('_', '-'), text)
+    @headings << AstroHeading.new(depth, text.gsub(/ +/, ' ').downcase.tr(' ', '-'), text)
 
     self
   end
