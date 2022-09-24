@@ -4,6 +4,8 @@ require 'pry'
 require 'bundler/setup'
 require 'simplecov'
 
+Dir['./spec/support/**/*.rb'].sort.each { |f| require f }
+
 SimpleCov.start
 
 require 'astro_concepts'

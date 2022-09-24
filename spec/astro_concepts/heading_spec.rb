@@ -29,9 +29,9 @@ RSpec.describe AstroConcepts::Heading do
   end
 
   describe '#add_heading' do
-    before {
+    before do
       parent.add_heading(child)
-    }
+    end
 
     describe '.parent' do
       subject { child.parent }

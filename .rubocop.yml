@@ -15,7 +15,7 @@ Metrics/BlockLength:
   Exclude:
     - "**/spec/**/*"
     - "*.gemspec"
-  IgnoredMethods:
+  AllowedMethods:
     - configure
     - context
     - define
@@ -37,6 +37,9 @@ Metrics/BlockLength:
 
 Metrics/MethodLength:
   Max: 25
+
+Style/Documentation:
+  Enabled: false
 
 Layout/LineLength:
   Max: 200
