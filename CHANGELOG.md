@@ -1,3 +1,10 @@
+## [0.1.1](https://github.com/klueless-io/astro_concepts/compare/v0.1.0...v0.1.1) (2022-10-02)
+
+
+### Bug Fixes
+
+* refactor astro_toc ([e4ff7cb](https://github.com/klueless-io/astro_concepts/commit/e4ff7cb574bad291939331fa7789c790f9579243))
+
 # [0.1.0](https://github.com/klueless-io/astro_concepts/compare/v0.0.1...v0.1.0) (2022-09-24)
 
 
