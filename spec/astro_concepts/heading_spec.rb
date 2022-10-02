@@ -3,8 +3,8 @@
 RSpec.describe AstroConcepts::Heading do
   subject { parent }
 
-  let(:parent) { described_class.new(1, 0, 'Heading 1') }
-  let(:child) { described_class.new(2, 1, 'Child heading') }
+  let(:parent) { described_class.new('Heading 1', 'heading-1', 1, 0) }
+  let(:child) { described_class.new('Child heading', 'child-heading', 2, 1) }
 
   describe '#initialize' do
     it 'has a depth' do
@@ -24,7 +24,7 @@ RSpec.describe AstroConcepts::Heading do
     end
 
     it 'has no headings' do
-      expect(subject.headings).to be_nil
+      expect(subject.headings).to be_empty
     end
   end
 

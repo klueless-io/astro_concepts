@@ -1,25 +1,16 @@
 # frozen_string_literal: true
 
-RSpec.describe AstroConcepts::CreateToc do
-  let(:instance) { described_class.new(map_astro_to_toc_headings) }
-  let(:map_astro_to_toc_headings) do
-    raw_headings.headings.map.with_index do |heading, index|
-      AstroConcepts::Heading.new(heading.depth, index, heading.text, slug: heading.slug)
-    end
-  end
+RSpec.describe AstroConcepts::AstroToc do
+  let(:instance) { described_class.new }
 
   subject { subject }
 
-  # fit { puts instance.to_h }
-  # it { instance.debug }
-
-  # Use this to construct a list of sample headings
   let(:heading_builder) { AstroHeadingListBuilder.new }
 
   context 'scenarios' do
-    subject { instance.hierarchies }
+    subject { instance.toc.headings }
 
-    before { instance.process }
+    before { instance.process(raw_headings.to_a) }
 
     context 'single root heading' do
       context 'with simple nesting levels' do
@@ -36,17 +27,23 @@ RSpec.describe AstroConcepts::CreateToc do
         it { is_expected.to be_a(Array).and have_attributes(length: 1) }
 
         describe '#to_h' do
-          subject { instance.to_h }
+          subject { instance.root_headings.map(&:to_h) }
 
           it do
             is_expected.to eq([
-                                { depth: 1, sequence: 0, text: 'Heading 1', slug: 'heading-1',
+                                {
+                                  depth: 1, sequence: 0, text: 'Heading 1', slug: 'heading-1',
                                   headings: [
-                                    { depth: 2, sequence: 1, text: 'Heading 2', slug: 'heading-2',
+                                    {
+                                      depth: 2, sequence: 1, text: 'Heading 2', slug: 'heading-2',
                                       headings: [
-                                        { depth: 3, sequence: 2, text: 'Heading 3', slug: 'heading-3' }
-                                      ] }
-                                  ] }
+                                        {
+                                          depth: 3, sequence: 2, text: 'Heading 3', slug: 'heading-3'
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
                               ])
           end
         end
@@ -66,17 +63,23 @@ RSpec.describe AstroConcepts::CreateToc do
         it { is_expected.to be_a(Array).and have_attributes(length: 1) }
 
         describe '#to_h' do
-          subject { instance.to_h }
+          subject { instance.root_headings.map(&:to_h) }
 
           it do
             is_expected.to eq([
-                                { depth: 1, sequence: 0, text: 'Heading 1', slug: 'heading-1',
+                                {
+                                  depth: 1, sequence: 0, text: 'Heading 1', slug: 'heading-1',
                                   headings: [
-                                    { depth: 2, sequence: 1, text: 'Heading 2', slug: 'heading-2',
+                                    {
+                                      depth: 2, sequence: 1, text: 'Heading 2', slug: 'heading-2',
                                       headings: [
-                                        { depth: 6, sequence: 2, text: 'Heading 6', slug: 'heading-6' }
-                                      ] }
-                                  ] }
+                                        {
+                                          depth: 6, sequence: 2, text: 'Heading 6', slug: 'heading-6'
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
                               ])
           end
         end
@@ -101,7 +104,7 @@ RSpec.describe AstroConcepts::CreateToc do
         it { is_expected.to be_a(Array).and have_attributes(length: 1) }
 
         describe '#to_h' do
-          subject { instance.to_h }
+          subject { instance.root_headings.map(&:to_h) }
 
           it do
             is_expected.to eq([
@@ -139,11 +142,10 @@ RSpec.describe AstroConcepts::CreateToc do
         it { is_expected.to be_a(Array).and have_attributes(length: 1) }
 
         describe '#to_h' do
-          subject { instance.to_h }
+          subject { instance.root_headings.map(&:to_h) }
 
           it do
             is_expected.to eq([
-
                                 { depth: 1, sequence: 0, text: 'Heading 1', slug: 'heading-1',
                                   headings: [
                                     { depth: 2, sequence: 1, text: 'Heading 2', slug: 'heading-2',
@@ -154,9 +156,10 @@ RSpec.describe AstroConcepts::CreateToc do
                                       headings: [
                                         { depth: 4, sequence: 4, text: 'Heading 4', slug: 'heading-4' }
                                       ] },
-                                    { depth: 2, sequence: 5, text: 'Heading 2 - different upstream', slug: 'heading-2---different-upstream' }
+                                    {
+                                      depth: 2, sequence: 5, text: 'Heading 2 - different upstream', slug: 'heading-2---different-upstream'
+                                    }
                                   ] }
-
                               ])
           end
         end
@@ -178,8 +181,9 @@ RSpec.describe AstroConcepts::CreateToc do
         it { is_expected.to be_a(Array).and have_attributes(length: 2) }
 
         describe '#to_h' do
-          subject { instance.to_h }
+          subject { instance.root_headings.map(&:to_h) }
 
+          # fit { instance.pretty }
           it do
             is_expected.to eq([
                                 { depth: 2, sequence: 0, text: 'Heading 2', slug: 'heading-2',
@@ -207,23 +211,30 @@ RSpec.describe AstroConcepts::CreateToc do
             .h3('Heading 3')
             .h2('Heading 2')
             .h1('Heading 1')
+            .h6('Heading 6 - connected to H1')
         end
 
         it { is_expected.to be_a(Array).and have_attributes(length: 5) }
 
         describe '#to_h' do
-          subject { instance.to_h }
+          subject { instance.root_headings.map(&:to_h) }
 
+          # fit { instance.pretty }
           it do
             is_expected.to eq([
                                 { depth: 5, sequence: 0, text: 'Heading 5', slug: 'heading-5' },
                                 { depth: 4, sequence: 1, text: 'Heading 4', slug: 'heading-4',
                                   headings: [
-                                    { depth: 5, sequence: 2, text: 'Heading 5 - connected to H4', slug: 'heading-5---connected-to-h4' }
+                                    {
+                                      depth: 5, sequence: 2, text: 'Heading 5 - connected to H4', slug: 'heading-5---connected-to-h4'
+                                    }
                                   ] },
                                 { depth: 3, sequence: 3, text: 'Heading 3', slug: 'heading-3' },
                                 { depth: 2, sequence: 4, text: 'Heading 2', slug: 'heading-2' },
-                                { depth: 1, sequence: 5, text: 'Heading 1', slug: 'heading-1' }
+                                { depth: 1, sequence: 5, text: 'Heading 1', slug: 'heading-1',
+                                  headings: [
+                                    { depth: 6, sequence: 6, text: 'Heading 6 - connected to H1', slug: 'heading-6---connected-to-h1' }
+                                  ] }
                               ])
           end
         end

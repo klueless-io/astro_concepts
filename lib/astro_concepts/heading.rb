@@ -2,21 +2,20 @@
 
 module AstroConcepts
   class Heading
-    attr_reader :depth
-    attr_reader :sequence
-    attr_reader :text
-    attr_reader :opts
-
     attr_accessor :parent
-    attr_accessor :headings
+    attr_accessor :sequence
+    attr_reader :text
+    attr_reader :slug
+    attr_reader :depth
+    attr_reader :headings
 
-    def initialize(depth, sequence, text, opts = {})
+    def initialize(text, slug, depth, sequence)
+      @parent = parent
+      @text = text
+      @slug = slug
       @depth = depth
       @sequence = sequence
-      @text = text
-      @opts = opts
-      @parent = nil
-      @headings = nil
+      @headings = []
     end
 
     def add_heading(heading)
@@ -25,25 +24,27 @@ module AstroConcepts
       @headings << heading
     end
 
-    def to_h
-      result = {
-        depth: depth,
-        sequence: sequence,
-        text: text
-      }.merge(opts)
+    def root?
+      depth.zero?
+    end
 
-      result[:headings] = headings.map(&:to_h) if headings
+    def valid?
+      depth.positive?
+    end
+
+    # rubocop:disable Metrics/AbcSize
+    def to_h(include_parent: false)
+      result = {}
+
+      result[:parent_name] = parent.text if include_parent && parent
+      result[:sequence] = sequence
+      result[:depth] = depth
+      result[:text] = text if text
+      result[:slug] = slug if slug
+      result[:headings] = headings.map(&:to_h) if headings.length.positive?
 
       result
     end
-
-    def debug(label = nil)
-      puts "- #{label} ------------------------------------------------------------" if label
-      puts "depth       : #{depth}"
-      puts "sequence    : #{sequence}"
-      puts "text        : #{text}"
-      puts "opts        : #{opts}"
-      puts "headings    : #{headings.map(&:text).join(', ')}" if headings
-    end
+    # rubocop:enable Metrics/AbcSize
   end
 end

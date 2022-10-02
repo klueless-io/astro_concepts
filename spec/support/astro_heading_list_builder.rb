@@ -40,4 +40,6 @@ class AstroHeadingListBuilder
   def to_h
     headings.map(&:to_h)
   end
+
+  alias to_a to_h
 end

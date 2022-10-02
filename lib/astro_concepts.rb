@@ -2,7 +2,7 @@
 
 require_relative 'astro_concepts/version'
 require_relative 'astro_concepts/heading'
-require_relative 'astro_concepts/create_toc'
+require_relative 'astro_concepts/astro_toc'
 
 module AstroConcepts
   # raise AstroConcepts::Error, 'Sample message'
